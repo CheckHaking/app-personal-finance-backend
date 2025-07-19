@@ -50,4 +50,4 @@ jobs:
           script: |
             # Ejecuta el script de despliegue que ya debe estar en el servidor
             # Asegúrate de que la ruta sea correcta y que el script tenga permisos de ejecución (chmod +x deploy.sh)
-            bash /home/opc/app-personal-finance-backend/deploy.sh
+            bash /home/sergioantunez/app-personal-finance-backend/deploy.sh
