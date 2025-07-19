@@ -12,4 +12,6 @@ services:
     env_file:
       # Le dice a Docker Compose que cargue las variables de entorno
       # desde un archivo .env ubicado en el mismo directorio en el servidor.
+      #docker
       - ./.env
+
