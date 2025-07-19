@@ -49,9 +49,6 @@ INSTALLED_APPS = [
     
     # Local apps
     'users',
-    'transactions',
-    'cards',
-    'debts',
 ]
 
 # REST Framework settings
