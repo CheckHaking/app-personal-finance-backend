@@ -6,7 +6,7 @@
 set -e
 
 # El directorio donde se encuentra tu docker-compose.yml en el servidor
-PROJECT_DIR="/home/opc/app-personal-finance-backend" # <-- ¡IMPORTANTE! Cambia esto a la ruta real en tu servidor Oracle
+PROJECT_DIR="/home/sergioantunez/app-personal-finance-backend" # <-- ¡IMPORTANTE! Cambia esto a la ruta real en tu servidor Oracle
 
 # Navegar al directorio del proyecto
 cd $PROJECT_DIR
