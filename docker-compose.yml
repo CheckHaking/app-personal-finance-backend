@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  backend:
+    # El nombre de la imagen que construiremos y subiremos con GitHub Actions.
+    # Formato: <tu_usuario_dockerhub>/<nombre_repo_backend>:latest
+    image: checkhaking/app-personal-finance-backend:latest
+    restart: always
+    ports:
+      # Mapea el puerto 8000 del contenedor al puerto 8000 del servidor.
+      - "8000:8000"
+    env_file:
+      # Le dice a Docker Compose que cargue las variables de entorno
+      # desde un archivo .env ubicado en el mismo directorio en el servidor.
+      - ./.env

@@ -1,0 +1,53 @@
+name: Deploy Backend to Oracle Cloud
+
+# 1. Disparador (Trigger)
+# Este workflow se ejecuta automáticamente cada vez que hay un push o merge a la rama 'develop'.
+on:
+  push:
+    branches:
+      - develop
+
+# 2. Trabajos (Jobs)
+# Los jobs se ejecutan en paralelo por defecto, pero podemos hacer que dependan uno del otro.
+jobs:
+  # --- PRIMER JOB: Construir y Subir la Imagen Docker ---
+  build-and-push:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest # Usamos una máquina virtual de Ubuntu proporcionada por GitHub
+    steps:
+      # Paso 1: Descargar el código del repositorio
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Paso 2: Iniciar sesión en Docker Hub (o el registro que elijas)
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Paso 3: Construir la imagen Docker y subirla al registro
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: . # El contexto es el directorio raíz del repo
+          push: true # Le decimos que suba la imagen después de construirla
+          tags: checkhaking/app-personal-finance-backend:latest # La etiqueta de la imagen
+
+  # --- SEGUNDO JOB: Desplegar en el Servidor ---
+  deploy:
+    name: Deploy to Oracle Server
+    needs: build-and-push # IMPORTANTE: Este job solo se ejecuta si 'build-and-push' fue exitoso
+    runs-on: ubuntu-latest
+    steps:
+      # Paso 1: Conectarse al servidor por SSH y ejecutar el script de despliegue
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ORACLE_HOST }}
+          username: ${{ secrets.ORACLE_USER }}
+          key: ${{ secrets.ORACLE_SSH_KEY }}
+          script: |
+            # Ejecuta el script de despliegue que ya debe estar en el servidor
+            # Asegúrate de que la ruta sea correcta y que el script tenga permisos de ejecución (chmod +x deploy.sh)
+            bash /home/opc/app-personal-finance-backend/deploy.sh
