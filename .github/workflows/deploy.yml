@@ -50,4 +50,9 @@ jobs:
           script: |
             # Ejecuta el script de despliegue que ya debe estar en el servidor
             # Asegúrate de que la ruta sea correcta y que el script tenga permisos de ejecución (chmod +x deploy.sh)
-            bash /home/sergioantunez/app-personal-finance-backend/deploy.sh
+            cd /home/sergioantunez/app-personal-finance-backend && \
+            echo 'Navegando al directorio del proyecto...' && \
+            /usr/local/bin/docker-compose pull backend && \
+            echo 'Reiniciando el servicio...' && \
+            /usr/local/bin/docker-compose up -d --no-deps backend && \
+            echo '✅ ¡Despliegue completado desde el workflow!'
