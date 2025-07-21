@@ -48,6 +48,10 @@ jobs:
           username: ${{ secrets.ORACLE_USER }}
           key: ${{ secrets.ORACLE_SSH_KEY }}
           script: |
-            # Ejecuta el script de despliegue que ya debe estar en el servidor
-            # Asegúrate de que la ruta sea correcta y que el script tenga permisos de ejecución (chmod +x deploy.sh)
-            bash /home/opc/app-personal-finance-backend/deploy.sh
+            # Ejecuta los comandos de despliegue directamente
+            cd /home/sergioantunez/app-personal-finance-backend && \
+            echo 'Navegando al directorio del proyecto...' && \
+            /usr/libexec/docker/cli-plugins/docker-compose pull backend && \
+            echo 'Reiniciando el servicio...' && \
+            /usr/libexec/docker/cli-plugins/docker-compose up -d --no-deps backend && \
+            echo '✅ ¡Despliegue completado desde el workflow!'
