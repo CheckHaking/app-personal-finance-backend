@@ -31,6 +31,15 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
+# Authentication Backends
+# --------------------------------------------------------------------------
+# Especifica los backends que Django usará para autenticar a un usuario.
+# Hemos añadido nuestro backend personalizado para permitir el login con email o username.
+AUTHENTICATION_BACKENDS = [
+    'users.backends.EmailOrUsernameBackend',
+    'django.contrib.auth.backends.ModelBackend', # Mantenemos el backend por defecto como fallback.
+]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,6 +53,7 @@ INSTALLED_APPS = [
     # Third party apps
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',  # Añadida la aplicación de blacklist de simple-jwt
     'corsheaders',
     
     # Local apps
