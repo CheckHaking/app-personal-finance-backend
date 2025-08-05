@@ -11,9 +11,26 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ('name', 'user', 'type', 'balance', 'currency')
+    list_display = ('name', 'user', 'type', 'balance', 'currency', 'credit_limit', 'current_debt_display')
     search_fields = ('name', 'user__username')
     list_filter = ('type', 'currency')
+    fieldsets = (
+        ('Información Básica', {
+            'fields': ('name', 'type', 'balance', 'currency')
+        }),
+        ('Configuración de Tarjeta de Crédito', {
+            'fields': ('credit_limit', 'closing_date', 'payment_date'),
+            'classes': ('collapse',),
+            'description': 'Solo aplicable para tarjetas de crédito'
+        }),
+    )
+    
+    def current_debt_display(self, obj):
+        """Muestra la deuda actual para tarjetas de crédito"""
+        if obj.type == 'credit':
+            return f"${obj.current_debt:,.2f}"
+        return "-"
+    current_debt_display.short_description = 'Deuda Actual'
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
