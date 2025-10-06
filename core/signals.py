@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from .models import Transaction
+from .models import Transaction, Transfer
 
 
 @receiver(post_save, sender=Transaction)
@@ -65,3 +65,21 @@ def update_account_balance_on_transaction_delete(sender, instance, **kwargs):
     
     account.save()
     print(f"Balance revertido para {account.name} ({account.type}): {account.balance}")
+
+
+@receiver(post_delete, sender=Transfer)
+def revert_balances_on_transfer_delete(sender, instance, **kwargs):
+    """
+    Revierte los balances cuando se elimina una transferencia
+    """
+    # Devolver el dinero a la cuenta origen
+    from_account = instance.from_account
+    from_account.balance += instance.amount
+    from_account.save()
+    
+    # Quitar el dinero de la cuenta destino
+    to_account = instance.to_account
+    to_account.balance -= instance.amount
+    to_account.save()
+    
+    print(f"Transferencia revertida: {instance.amount} de {to_account.name} a {from_account.name}")

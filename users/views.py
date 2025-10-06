@@ -20,7 +20,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserProfileView(APIView):
     """
-    Vista para obtener la información del usuario autenticado.
+    Vista para obtener y actualizar la información del usuario autenticado.
     """
     permission_classes = [permissions.IsAuthenticated]
 
@@ -30,6 +30,26 @@ class UserProfileView(APIView):
         """
         serializer = UserSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        """
+        Actualiza la información del usuario autenticado.
+        """
+        serializer = UserSerializer(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request):
+        """
+        Actualiza parcialmente la información del usuario autenticado.
+        """
+        serializer = UserSerializer(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutView(APIView):
